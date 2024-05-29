@@ -3,6 +3,7 @@ session_start();
 include 'connexion.php';
 
 // Vérifiez si l'utilisateur est connecté
+//test commit
 if (!isset($_SESSION['utilisateur_id'])) {
     header("Location: login.html");
     exit();
