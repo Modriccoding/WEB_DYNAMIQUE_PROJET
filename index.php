@@ -3,7 +3,6 @@ session_start();
 include 'connexion.php';
 
 // Vérifiez si l'utilisateur est connecté
-//test commit
 if (!isset($_SESSION['utilisateur_id'])) {
     header("Location: login.html");
     exit();
@@ -11,7 +10,7 @@ if (!isset($_SESSION['utilisateur_id'])) {
 
 // Récupérer les informations de l'utilisateur connecté
 $utilisateur_id = $_SESSION['utilisateur_id'];
-$query_user = "SELECT pseudo FROM utilisateurs WHERE id = ?";
+$query_user = "SELECT pseudo, photo_profil FROM utilisateurs WHERE id = ?";
 $stmt_user = $conn->prepare($query_user);
 $stmt_user->bind_param("i", $utilisateur_id);
 $stmt_user->execute();
@@ -55,6 +54,12 @@ $utilisateur = $result_user->fetch_assoc();
             width: 100%;
             height: auto;
         }
+        .profile-img-nav {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +83,9 @@ $utilisateur = $result_user->fetch_assoc();
                 <li class="nav-item">
                     <span class="navbar-text">
                         Connecté en tant que <?= htmlspecialchars($utilisateur['pseudo']) ?>
+                        <?php if ($utilisateur['photo_profil']): ?>
+                            <img src="<?= htmlspecialchars($utilisateur['photo_profil']) ?>" alt="Photo de profil" class="profile-img-nav">
+                        <?php endif; ?>
                     </span>
                 </li>
                 <li class="nav-item">
@@ -98,13 +106,13 @@ $utilisateur = $result_user->fetch_assoc();
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="image1.jpg" class="d-block w-100" alt="Slide 1">
+                    <img src="image11.jpg" class="d-block w-100" alt="Slide 1">
                 </div>
                 <div class="carousel-item">
-                    <img src="image2.jpg" class="d-block w-100" alt="Slide 2">
+                    <img src="image22.jpg" class="d-block w-100" alt="Slide 2">
                 </div>
                 <div class="carousel-item">
-                    <img src="image3.jpg" class="d-block w-100" alt="Slide 3">
+                    <img src="image33.jpg" class="d-block w-100" alt="Slide 3">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">

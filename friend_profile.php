@@ -8,21 +8,27 @@ if (!isset($_SESSION['utilisateur_id'])) {
     exit();
 }
 
-// Récupérer les informations de l'utilisateur connecté
-$utilisateur_id = $_SESSION['utilisateur_id'];
-$query_user = "SELECT pseudo FROM utilisateurs WHERE id = ?";
-$stmt_user = $conn->prepare($query_user);
-$stmt_user->bind_param("i", $utilisateur_id);
-$stmt_user->execute();
-$result_user = $stmt_user->get_result();
-$utilisateur = $result_user->fetch_assoc();
+// Récupérer l'ID de l'ami à partir de la requête GET
+$friend_id = isset($_GET['friend_id']) ? intval($_GET['friend_id']) : 0;
 
-// Assurez-vous que $utilisateur contient des données avant de l'utiliser
-$pseudo = isset($utilisateur['pseudo']) ? htmlspecialchars($utilisateur['pseudo']) : 'Utilisateur inconnu';
+if ($friend_id <= 0) {
+    die("Ami invalide.");
+}
 
-// Récupérer les offres d'emploi
-$query_jobs = "SELECT * FROM emplois";
-$result_jobs = $conn->query($query_jobs);
+// Récupérer les informations de l'ami
+$query_friend = "SELECT pseudo, email, nom, bio FROM utilisateurs WHERE id = ?";
+$stmt_friend = $conn->prepare($query_friend);
+if ($stmt_friend === false) {
+    die("Erreur de préparation de la requête: " . $conn->error);
+}
+$stmt_friend->bind_param("i", $friend_id);
+$stmt_friend->execute();
+$result_friend = $stmt_friend->get_result();
+$ami = $result_friend->fetch_assoc();
+
+if (!$ami) {
+    die("Ami introuvable.");
+}
 ?>
 
 <!DOCTYPE html>
@@ -30,7 +36,7 @@ $result_jobs = $conn->query($query_jobs);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offres d'emploi - FECEBOOK</title>
+    <title>Profil de <?= htmlspecialchars($ami['pseudo']) ?> - ECE In</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -49,34 +55,18 @@ $result_jobs = $conn->query($query_jobs);
         .navbar-text {
             color: #3b5998; /* Couleur du texte "Connecté en tant que" */
         }
-        .btn-primary {
-            background-color: #4267B2; /* Couleur bleue primaire pour les boutons */
-            border-color: #4267B2;
-        }
-        .btn-secondary {
-            background-color: #8b9dc3; /* Couleur secondaire pour les boutons */
-            border-color: #8b9dc3;
-        }
-        .container {
+        .profile-card {
             background-color: #fff;
-            color: #000;
+            color: #3b5998;
             border-radius: 10px;
             padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             margin-top: 20px;
-        }
-        .table th, .table td {
-            color: #000;
-        }
-        .footer {
-            background-color: #3b5998;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="index.php">
             <img src="LOGOfecebook.jpg" alt="Logo FECEBOOK">
         </a>
@@ -95,7 +85,7 @@ $result_jobs = $conn->query($query_jobs);
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <span class="navbar-text">
-                        Connecté en tant que <?= $pseudo ?>
+                        Connecté en tant que <?= htmlspecialchars($_SESSION['pseudo']) ?>
                     </span>
                 </li>
                 <li class="nav-item">
@@ -104,30 +94,14 @@ $result_jobs = $conn->query($query_jobs);
             </ul>
         </div>
     </nav>
-    <div class="container mt-3">
-        <h1>Offres d'emploi</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result_jobs->fetch_assoc()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($row['titre']) ?></td>
-                        <td><?= htmlspecialchars($row['description']) ?></td>
-                        <td><a href="postuler.php?id=<?= $row['id'] ?>" class="btn btn-primary">Postuler</a></td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+    <div class="container">
+        <div class="profile-card">
+            <h1>Profil de <?= htmlspecialchars($ami['pseudo']) ?></h1>
+            <p><strong>Email :</strong> <?= htmlspecialchars($ami['email']) ?></p>
+            <p><strong>Nom :</strong> <?= htmlspecialchars($ami['nom']) ?></p>
+            <p><strong>Bio :</strong> <?= htmlspecialchars($ami['bio'] ?? '') ?></p>
+        </div>
     </div>
-    <footer class="footer mt-3">
-        <p>&copy; 2024 ECE In - Tous droits réservés</p>
-    </footer>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

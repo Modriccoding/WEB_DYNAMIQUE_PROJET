@@ -100,8 +100,72 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter un ami</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #3b5998; /* Couleur de fond similaire au logo */
+            color: #fff; /* Texte blanc pour contraste */
+        }
+        .navbar {
+            background-color: #3b5998; /* Couleur de la barre de navigation */
+        }
+        .navbar-brand img {
+            height: 40px;
+        }
+        .navbar-nav .nav-link {
+            color: #3b5998 !important; /* Couleur du texte de navigation */
+        }
+        .navbar-text {
+            color: #3b5998; /* Couleur du texte "Connecté en tant que" */
+        }
+        .btn-primary {
+            background-color: #4267B2; /* Couleur bleue primaire pour les boutons */
+            border-color: #4267B2;
+        }
+        .btn-secondary {
+            background-color: #8b9dc3; /* Couleur secondaire pour les boutons */
+            border-color: #8b9dc3;
+        }
+        .carousel-inner img {
+            width: 100%;
+            height: auto;
+        }
+        .profile-img-nav {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.php">
+            <img src="LOGOfecebook.jpg" alt="Logo FECEBOOK" style="height: 40px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="index.php">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="mon_reseau.php">Mon Réseau</a></li>
+                <li class="nav-item"><a class="nav-link" href="vous.php">Vous</a></li>
+                <li class="nav-item"><a class="nav-link" href="notifications.php">Notifications</a></li>
+                <li class="nav-item"><a class="nav-link" href="messagerie.php">Messagerie</a></li>
+                <li class="nav-item"><a class="nav-link" href="emplois.php">Emplois</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <span class="navbar-text">
+                        Connecté en tant que <?= htmlspecialchars($_SESSION['pseudo'] ?? 'Utilisateur') ?>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php">Se déconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <h1>Ajouter un ami</h1>
         <?php
