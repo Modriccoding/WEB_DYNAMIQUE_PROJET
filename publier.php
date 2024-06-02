@@ -2,7 +2,7 @@
 session_start();
 include 'connexion.php';
 
-// Vérifiez si l'utilisateur est connecté
+/// Vérifiez si l'utilisateur est connecté
 if (!isset($_SESSION['utilisateur_id'])) {
     header("Location: login.html");
     exit();
